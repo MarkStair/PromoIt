@@ -57,7 +57,8 @@ $(function() {
     e.stopPropagation();
   })
 
-  $('.menu-item').click(function(e) {
+
+  $('.menu-item:not(#want-list)').click(function(e) {
     openMenu(e, $(this).attr('id'));
   })
 
@@ -67,12 +68,16 @@ $(function() {
   })
 
 
+
   $(document).click(function() {
     $('#game-shot').css('background-image', 'url("img/screenshot.jpg")');
     $('[data-menu-state=active]').animate({right: "-350px"}, 500);
     $('body').attr('data-side-menu-state', 'closed');
     $('.action-response').hide();
+    $('#add-item-button').show();
+    $('#receive-reward-button').show();
   })
+
 
   //https://stackoverflow.com/questions/7790561/how-can-i-make-the-html5-number-field-display-trailing-zeroes
   //make number input display trailing zero

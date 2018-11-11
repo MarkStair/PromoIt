@@ -149,6 +149,7 @@ body {
 }
 
 #add-item-response,
+#receive-reward-response,
 #purchase-response {
 	color: #52AD26;
 }
@@ -172,6 +173,46 @@ body {
 	text-align: right;
 	border-bottom: 1px solid #999;
 	background: #ebc86a;
+	background: -moz-linear-gradient(top, #ebc86a 0%, #6d5e1d 100%);
+	background: -webkit-linear-gradient(top, #ebc86a 0%, #6d5e1d 100%);
+	background: linear-gradient(to bottom, #ebc86a 0%, #6d5e1d 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2eb32', endColorstr='#f78604', GradientType=0);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+#settings-container {
+  text-align:right;
+  width:100%;
+  float:right;
+}
+
+#settings-container .fa-cog {
+  font-size:45px;
+  color:#aaa;
+}
+
+#settings-container .fa-caret-down {
+  font-size:15px;
+  position:relative;
+  top:-20px;
+  color:#666;
+}
+
+
+
+#right-menu-items {
+  width:280px;
+  float:right;
+}
+
+#token-balance {
+  float:right;
+  position:relative;
+  top:40px;
+  font-family: 'UnifrakturCook', cursive;
+	font-size: 30px;
+  background: #ebc86a;
 	background: -moz-linear-gradient(top, #ebc86a 0%, #6d5e1d 100%);
 	background: -webkit-linear-gradient(top, #ebc86a 0%, #6d5e1d 100%);
 	background: linear-gradient(to bottom, #ebc86a 0%, #6d5e1d 100%);
@@ -222,6 +263,7 @@ body {
 }
 
 #claim-notifications {
+  display:none;
 	background-color: #52AD26;
 	border-radius: 50%;
 	width: 25px;

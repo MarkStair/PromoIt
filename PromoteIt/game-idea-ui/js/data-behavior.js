@@ -43,9 +43,16 @@ function eosRequest(method, elementID) {
           break;
 
         case 'add-item-button':
+          $('#add-item-button').hide();
+          $('#add-item-response').show();
+          setTimeout(function() {$('#claim-notifications').show()}, 3000);
           break;
 
         case 'receive-reward-button':
+          $('#receive-reward-button').hide();
+          $('#receive-reward-response').show();
+          $('#claim-notifications').hide();
+          $('#token-balance-amount').html('3.45');
           break;
       }
       break;
