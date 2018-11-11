@@ -1,0 +1,326 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Sun Nov 11 10:13:27 2018",
+    "version": "eosio::abi/1.0",
+    "structs": [
+        {
+            "name": "account",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "token_balance",
+                    "type": "float64"
+                }
+            ]
+        },
+        {
+            "name": "buyitem",
+            "base": "",
+            "fields": [
+                {
+                    "name": "serialnum",
+                    "type": "uint64"
+                },
+                {
+                    "name": "buyer",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "claim",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "claimer",
+                    "type": "name"
+                },
+                {
+                    "name": "rewardid",
+                    "type": "uint64"
+                },
+                {
+                    "name": "easyfindr",
+                    "type": "uint128"
+                }
+            ]
+        },
+        {
+            "name": "claimreward",
+            "base": "",
+            "fields": [
+                {
+                    "name": "claimer",
+                    "type": "name"
+                },
+                {
+                    "name": "serialnum",
+                    "type": "uint64"
+                },
+                {
+                    "name": "rewardid",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "cleartables",
+            "base": "",
+            "fields": [
+                {
+                    "name": "nonsense",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "createacct",
+            "base": "",
+            "fields": [
+                {
+                    "name": "accountname",
+                    "type": "name"
+                },
+                {
+                    "name": "assetamount",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "createitem",
+            "base": "",
+            "fields": [
+                {
+                    "name": "description",
+                    "type": "string"
+                },
+                {
+                    "name": "quantity",
+                    "type": "uint64"
+                },
+                {
+                    "name": "creator",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "findclaims",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "issueitem",
+            "base": "",
+            "fields": [
+                {
+                    "name": "creator",
+                    "type": "name"
+                },
+                {
+                    "name": "productid",
+                    "type": "uint64"
+                },
+                {
+                    "name": "quantity",
+                    "type": "uint64"
+                },
+                {
+                    "name": "listprice",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "item",
+            "base": "",
+            "fields": [
+                {
+                    "name": "serialnum",
+                    "type": "uint64"
+                },
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "currentprice",
+                    "type": "uint64"
+                },
+                {
+                    "name": "productid",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "postitem",
+            "base": "",
+            "fields": [
+                {
+                    "name": "serialnum",
+                    "type": "uint64"
+                },
+                {
+                    "name": "seller",
+                    "type": "name"
+                },
+                {
+                    "name": "pricetopost",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "product",
+            "base": "",
+            "fields": [
+                {
+                    "name": "productid",
+                    "type": "uint64"
+                },
+                {
+                    "name": "description",
+                    "type": "string"
+                },
+                {
+                    "name": "unissuedct",
+                    "type": "uint64"
+                },
+                {
+                    "name": "creator",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "reward",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "poster",
+                    "type": "name"
+                },
+                {
+                    "name": "productid",
+                    "type": "uint64"
+                },
+                {
+                    "name": "totalamt",
+                    "type": "uint64"
+                },
+                {
+                    "name": "totalrewards",
+                    "type": "uint64"
+                },
+                {
+                    "name": "totalclaimed",
+                    "type": "uint64"
+                }
+            ]
+        }
+    ],
+    "types": [],
+    "actions": [
+        {
+            "name": "buyitem",
+            "type": "buyitem",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "claimreward",
+            "type": "claimreward",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "cleartables",
+            "type": "cleartables",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "createacct",
+            "type": "createacct",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "createitem",
+            "type": "createitem",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "findclaims",
+            "type": "findclaims",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "issueitem",
+            "type": "issueitem",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "postitem",
+            "type": "postitem",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "account",
+            "type": "account",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "claim",
+            "type": "claim",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "item",
+            "type": "item",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "product",
+            "type": "product",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "reward",
+            "type": "reward",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "ricardian_clauses": [],
+    "abi_extensions": []
+}
