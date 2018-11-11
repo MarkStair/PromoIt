@@ -2,13 +2,13 @@
 
 const EOS_CONFIG = {
   //if you want to call a specific contract
-  //contractName: "ping.ctr", // Contract name
-  //contractSender: "tester", // User executing the contract (should be paired with private key)
+  contractName: "promoteit", // Contract name
+  contractSender: "james", // User executing the contract (should be paired with private key)
 
   clientConfig: {
     //NOTE: NEVER put your private key in source, for demo purposes ONLY
-    keyProvider: ['5Joh3kDYk3pYMS3W4LA3gfbaqgB8hwcBCnfEbW6nsq5a6bWMnCu'], // Your private key
-    httpEndpoint: 'http://127.0.0.1:8888' // EOS http endpoint
+    keyProvider: ['5JZSuvSL928LqUmmuzkWowBqVXmMHPDapNT6HFhH26Xw3SEaTHF'], // Your private key
+    httpEndpoint: 'http://0.0.0.0:7777' // EOS http endpoint
   }
 }
 
@@ -38,8 +38,20 @@ function eosRequest(method, elementID) {
           break;
 
         case 'purchase-button':
-          $('#purchase-response').show();
-          $('#want-response').hide();
+        eos.contract('promoteit')
+          .then((contract) => {
+            console.log("CONTRACT INIT");
+            contract.buyitem( {
+              "serialnum": "0",
+              "buyername": "james"
+              }, {authorization: EOS_CONFIG.contractSender} ) 
+              .then((res) => {
+                console.log("POST CALL");
+                console.log(res);
+                $('#purchase-response').show();
+                $('#want-response').hide();
+            }).catch((err) => { console.log(err) })
+          }).catch((err) => { console.log(err) })
           break;
 
         case 'add-item-button':
