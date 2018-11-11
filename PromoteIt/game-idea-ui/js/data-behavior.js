@@ -50,6 +50,7 @@ function eosRequest(method, elementID) {
                 console.log(res);
                 $('#purchase-response').show();
                 $('#want-response').hide();
+                $('#hidden-hat').show();
             }).catch((err) => { console.log(err) })
           }).catch((err) => { console.log(err) })
           break;
