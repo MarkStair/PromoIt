@@ -79,8 +79,26 @@ body {
 	height: 100%;
 }
 
+.buy-item-inner {
+	width: 100%;
+	float: left;
+	background: #fff;
+	border-radius: 8px;
+	height: 100%;
+}
+
+.item-inner span{
+  	font-size: 30px;
+}
+
+.buy-item-inner span {
+  font-size:22px;
+}
+
+
+.buy-item-inner i,
 .item-inner i {
-	font-size: 40px;
+  font-size: 40px;
 	margin-top: 8px;
 	float: left;
 	height: 40px;
@@ -96,10 +114,11 @@ body {
 	-webkit-text-fill-color: transparent;
 }
 
+
+.buy-item-inner span,
 .item-inner span {
   margin-top:6px;
 	width: 100%;
-	font-size: 30px;
 	color: white;
 	float: left;
 	text-align: center;
@@ -110,6 +129,46 @@ body {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2eb32', endColorstr='#f78604', GradientType=0);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
+}
+
+.buy-item-inner span {
+  position:relative;
+  top:-6px;
+}
+
+.item-percentage {
+  position:relative;
+  height:0px;
+  top:100px;
+}
+
+.item-percentage-value {
+  position:absolute;
+  top:300px;
+  z-index:999;
+  padding-top:40px;
+  padding-left:70px;
+}
+
+#item-sorting-hat {
+  background-size: 50%;
+  background-repeat:no-repeat;
+  background-position:center 30px;
+  background-image:url(../img/sorting-hat.png);
+}
+
+#item-robe {
+  background-size: 50%;
+  background-repeat:no-repeat;
+  background-position:center 30px;
+  background-image:url(../img/robe.png);
+}
+
+#item-gloves {
+  background-size: 50%;
+  background-repeat:no-repeat;
+  background-position:center 30px;
+  background-image:url(../img/gloves.png);
 }
 
 .side-menu {
