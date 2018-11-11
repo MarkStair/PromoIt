@@ -1,5 +1,5 @@
 {
-    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Sun Nov 11 10:13:27 2018",
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Sun Nov 11 12:02:50 2018",
     "version": "eosio::abi/1.0",
     "structs": [
         {
@@ -29,8 +29,8 @@
                     "type": "uint64"
                 },
                 {
-                    "name": "buyer",
-                    "type": "name"
+                    "name": "buyername",
+                    "type": "string"
                 }
             ]
         },
@@ -117,7 +117,7 @@
             ]
         },
         {
-            "name": "findclaims",
+            "name": "findrewards",
             "base": "",
             "fields": [
                 {
@@ -211,6 +211,38 @@
             ]
         },
         {
+            "name": "referitem",
+            "base": "",
+            "fields": [
+                {
+                    "name": "serialnum",
+                    "type": "uint64"
+                },
+                {
+                    "name": "potentlbuyer",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "referral",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "serialnum",
+                    "type": "uint64"
+                },
+                {
+                    "name": "potentlbuyer",
+                    "type": "name"
+                }
+            ]
+        },
+        {
             "name": "reward",
             "base": "",
             "fields": [
@@ -269,8 +301,8 @@
             "ricardian_contract": ""
         },
         {
-            "name": "findclaims",
-            "type": "findclaims",
+            "name": "findrewards",
+            "type": "findrewards",
             "ricardian_contract": ""
         },
         {
@@ -281,6 +313,11 @@
         {
             "name": "postitem",
             "type": "postitem",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "referitem",
+            "type": "referitem",
             "ricardian_contract": ""
         }
     ],
@@ -309,6 +346,13 @@
         {
             "name": "product",
             "type": "product",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "referral",
+            "type": "referral",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

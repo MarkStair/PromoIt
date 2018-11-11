@@ -23,11 +23,23 @@ using std::string;
 CONTRACT promoteit : public eosio::contract {
     private:
 
-        struct items;
+        /* Rundown of structs:
+        
+         * Users can create PRODUCTS (kinds of items) and issue ITEMS (instances of
+         * products). When a user purchases an item, half of the total goes to a
+         * reward record in REWARDS. Users who have items with outstanding rewards
+         * can claim their rewards, adding to CLAIMS.
+         * 
+         * For now, we have not implemented deposit-then-send behavior, so we handle
+         * transactions in this contract via ACCOUNTS and transact()
+         */
+
         struct products;
+        struct items;
         struct rewards;
         struct claims;
         struct accounts;
+        struct referrals;
 
     public:
 
@@ -38,23 +50,16 @@ CONTRACT promoteit : public eosio::contract {
         products(_code, _code.value),
         rewards(_code, _code.value),
         claims(_code, _code.value),
-        accounts(_code, _code.value)
+        accounts(_code, _code.value),
+        referrals(_code, _code.value)
     {}
 
-    // This contract would implement a deposit-then-spend model for transactions, but for
-    // now it uses its own accounts struct and a transact() function
 
-    ACTION createacct ( const name accountname, uint64_t assetamount ) {
-
-        require_auth(get_self());
-        auto acct_itr = accounts.emplace( _code, [&]( auto& account ){
-            account.id              = accounts.available_primary_key();
-            account.owner   	    = accountname;
-            account.token_balance   = assetamount;
-        });
- 
-    }
-
+    /* createitem() lets users add new items. Ultimately this will be subject to
+     * centralized approval of the item, or to some kind of consensus mechanism. In
+     * addition, a good deal more information than just a "description" and "quantity"
+     * can be included.
+     */
     ACTION createitem ( const string description, const uint64_t quantity, const name creator ) {
         eosio::require_auth ( creator );
         eosio_assert ( quantity > 0, "You must create at least 1 of this item");
@@ -68,6 +73,10 @@ CONTRACT promoteit : public eosio::contract {
 
     }
 
+    /* issueitem() lets creators issue items in batches. The current inelegant solution
+     * to keep the action reasonably lightweight is to limit issuance to 10 at a time.
+     * This posts the items for sale at the creator's set price.
+     */
     ACTION issueitem ( const name creator, const uint64_t productid, const uint64_t quantity, const uint64_t listprice ) {
         eosio::require_auth ( creator );
         eosio_assert ( quantity > 0, "You must issue more than 0 items");
@@ -99,6 +108,9 @@ CONTRACT promoteit : public eosio::contract {
         });
     }
 
+    /* For a buyer to post an item for sale on the secondary market, or for
+     * creators to re-price an item, postitem()
+     */
     ACTION postitem ( const uint64_t serialnum, const name seller, const uint64_t pricetopost ) {
         eosio::require_auth ( seller );
         auto goodtopost = items.find( serialnum );
@@ -110,7 +122,12 @@ CONTRACT promoteit : public eosio::contract {
 
     }
 
-    ACTION buyitem ( const uint64_t serialnum, const name buyer ) {
+    /* Buying items not only sends money from buyer to seller and transfers
+     * ownership of the item, it also creates a claimable reward for
+     * the item with rewardowners()
+     */
+    ACTION buyitem ( const uint64_t serialnum, const string buyername ) {
+        name buyer = name(buyername);
         eosio::require_auth ( buyer );
         auto goodtosell = items.find( serialnum );
         eosio_assert (!(goodtosell == items.end()), "Item not found.");
@@ -133,6 +150,10 @@ CONTRACT promoteit : public eosio::contract {
         });
     }
 
+    /* Rewards are not automatic; this would create a large number of transactions.
+     * Instead, the client app can findrewards() and notify the user, who can then
+     * claimreward()
+     */
     ACTION claimreward ( const name claimer, const uint64_t serialnum, const uint64_t rewardid ) {
         eosio::require_auth ( claimer );
         auto reward_toclaim = rewards.find( rewardid );
@@ -170,44 +191,58 @@ CONTRACT promoteit : public eosio::contract {
 
     }
 
-    ACTION findclaims ( const name owner ) {
+    /* Rewards are not automatic; this would create a large number of transactions.
+     * Instead, the client app can findrewards() and notify the user, who can then
+     * claimreward(). findrewards() hasn't been implemented yet; a client could at
+     * this point use a chain of cleos get table calls to find the needed
+     * rewardids for claimreward().
+     */
+    ACTION findrewards ( const name owner ) {
         
-
+        // Not yet implemented.
+        // This will return all rewards owner has waiting to be claimed
+        // reward_index rewards holds pending rewards to be claimed,
+        // so user can find rewards for any items the user holds
         
     }
+
+    /* This contract must implement a deposit-then-spend model for transactions,
+     * but for now it uses its own accounts struct and a transact() function.
+     */
+    ACTION createacct ( const name accountname, uint64_t assetamount ) {
+        require_auth(get_self());
+        auto acct_itr = accounts.emplace( _code, [&]( auto& account ){
+            account.id              = accounts.available_primary_key();
+            account.owner   	    = accountname;
+            account.token_balance   = assetamount;
+        });
+    }
     
-    /** For testing only. Do not deploy */
+    /* XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     * For testing only, to clear all tables. Do not deploy.
+     */
     ACTION cleartables( const uint64_t nonsense ) {
         require_auth ( _self );
 
         auto it = items.begin();
-        while (it != items.end()) {
-            it = items.erase(it);
-        }
-
         auto pt = products.begin();
-        while (pt != products.end()) {
-            pt = products.erase(pt);
-        }
-
         auto rwd = rewards.begin();
-        while (rwd != rewards.end()) {
-            rwd = rewards.erase(rwd);
-        }
-
         auto clm = claims.begin();
-        while (clm != claims.end()) {
-            clm = claims.erase(clm);
-        }
-
         auto acct = accounts.begin();
-        while (acct != accounts.end()) {
-            acct = accounts.erase(acct);
-        }
+        
+        while (it != items.end()) { it = items.erase(it); }
+        while (pt != products.end()) { pt = products.erase(pt); }    
+        while (rwd != rewards.end()) { rwd = rewards.erase(rwd); }      
+        while (clm != claims.end()) { clm = claims.erase(clm); } 
+        while (acct != accounts.end()) { acct = accounts.erase(acct); }
     } // For testing only.
 
 
-    /** Old system to create referrals
+    /* Not implemented yet. A referral system option would allow developers
+     * to change from the model of "everyone who owns gets a %" to a
+     * model where ENCOUNTERS (as determined by the developer) with a
+     * player wearing an item count as a referral
+     */
     ACTION referitem ( const uint64_t serialnum, const name potentlbuyer ) {
 
         auto referralgood = items.find( serialnum );
@@ -215,18 +250,19 @@ CONTRACT promoteit : public eosio::contract {
 
         auto referral_itr = referrals.emplace( _code, [&]( auto& referral ){
             referral.id	            = referrals.available_primary_key();
-            referral.description    = description;
+            referral.serialnum      = serialnum;
             referral.potentlbuyer   = potentlbuyer;
         });
-
-    } */
+    }
 
     private:
 
+        /* To reward all owners, it's not practical in this framework to disburse
+         * rewards to everyone on the contract's resources. Instead, one reward
+         * record is created per sale and can be claimed with claimreward() by
+         * users.
+         */
         void rewardowners ( const uint64_t productid, const name owner, const uint64_t rewardamt ) {
-
-            // It's likely too intensive to reward everybody here, so instead we'll
-            // create claims and let people claim their rewards
 
             auto items_search = items.get_index<name("productid")>();
             auto items_owned = std::distance(items_search.cbegin(),items_search.cend()); 
@@ -241,11 +277,15 @@ CONTRACT promoteit : public eosio::contract {
             });
         }
 
+        /* Again, we'll implement deposit-then-spend, but for now we handle
+         * transactions in a contract table accounts.
+         */
         void transact(const name from, const name to, const double quantity)
         {
             // as usual, will need more checks here, esp. once using token/accounts/deposit-then-send
             eosio_assert(quantity > 0, "cannot send 0");
 
+            // we'll find users by names
             auto accts_search = accounts.get_index<name("owner")>();
             auto acct_itr = accts_search.find(from.value);
             // hacky solution to template mismatch ahoy
@@ -253,7 +293,7 @@ CONTRACT promoteit : public eosio::contract {
             eosio_assert(acct_itr != accts_search.end(), "unknown sender");
 
             auto to_acct_itr = accts_search.find(to.value);
-            // the hacky solution returns
+            // hacky solution, reprise
             uint64_t to_acct_id = to_acct_itr->id;
             eosio_assert(to_acct_itr != accts_search.end(), "unknown receipient");
 
@@ -275,7 +315,7 @@ CONTRACT promoteit : public eosio::contract {
         struct [[eosio::table, eosio::contract("promoteit")]] item {
             uint64_t    serialnum = 0;
             name        owner;
-            uint64_t    currentprice; // 0 is not for sale; items can be gifted but not posted for $0
+            uint64_t    currentprice; // currently, 0 means "not for sale"; items can be gifted but not posted for $0
             uint64_t    productid;
             uint64_t primary_key()const { return serialnum; }
             uint64_t by_secondary()const { return productid; }
@@ -284,7 +324,7 @@ CONTRACT promoteit : public eosio::contract {
         };
 
         typedef eosio::multi_index<name("item"), item, eosio::indexed_by<name("productid"), eosio::const_mem_fun<item, uint64_t, &item::by_secondary>>> item_index;
-		item_index	items;
+		
 
         struct [[eosio::table, eosio::contract("promoteit")]] product {
             uint64_t    productid = 0;
@@ -297,20 +337,6 @@ CONTRACT promoteit : public eosio::contract {
         };
 
         typedef eosio::multi_index< name("product"), product > product_index;
-		product_index	products;
-
-        /** Old referrals table
-            struct [[eosio::table, eosio::contract("promoteit")]] referral {
-            uint64_t    id = 0;
-            uint64_t    serialnum;
-            name        potentlbuyer;
-            uint64_t primary_key()const { return id; }
-
-            EOSLIB_SERIALIZE( referral, (id)(serialnum)(potentlbuyer) )
-        };
-
-        typedef eosio::multi_index< name("referral"), referral > referral_index;
-		referral_index	referrals; */
 
         struct [[eosio::table, eosio::contract("promoteit")]] reward {
             uint64_t    id = 0;
@@ -325,7 +351,6 @@ CONTRACT promoteit : public eosio::contract {
         };
 
         typedef eosio::multi_index< name("reward"), reward > reward_index;
-		reward_index	rewards;
 
         struct [[eosio::table, eosio::contract("promoteit")]] claim {
             uint64_t    id = 0;
@@ -341,8 +366,6 @@ CONTRACT promoteit : public eosio::contract {
 
         typedef eosio::multi_index<name("claim"), claim, eosio::indexed_by<name("easyfindr"), eosio::const_mem_fun<claim, uint64_t, &claim::by_secondary>>> claim_index;
 
-        claim_index	claims;
-
         struct [[eosio::table, eosio::contract("promoteit")]] account {
             uint64_t    id = 0;
             name        owner;        
@@ -355,8 +378,28 @@ CONTRACT promoteit : public eosio::contract {
         };
 
         typedef eosio::multi_index<name("account"), account, eosio::indexed_by<name("owner"), eosio::const_mem_fun<account, uint64_t, &account::by_secondary>>> account_index;
+
+        /** The referrals table here is for referitem() above,
+         *  still unused (but for an optional alternate model later).
+         */
+        struct [[eosio::table, eosio::contract("promoteit")]] referral {
+            uint64_t    id = 0;
+            uint64_t    serialnum;
+            name        potentlbuyer;
+            uint64_t primary_key()const { return id; }
+        
+            EOSLIB_SERIALIZE( referral, (id)(serialnum)(potentlbuyer) )
+        };
+
+        typedef eosio::multi_index< name("referral"), referral > referral_index;
+
+        item_index	    items;
+        product_index	products;
+        claim_index	    claims;
 		account_index	accounts;
+        reward_index	rewards;
+        referral_index  referrals;
 
 };
 
-EOSIO_DISPATCH( promoteit, (createacct)(cleartables)(issueitem)(createitem)(postitem)(buyitem)(claimreward) )
+EOSIO_DISPATCH( promoteit, (createacct)(cleartables)(issueitem)(createitem)(postitem)(buyitem)(claimreward)(findrewards) )
